@@ -18,7 +18,7 @@ body {
     padding-bottom: 10px;
 }
   
-.square {
+.sqr {
     width: 30%;
     aspect-ratio: 1/1;
     border: 3px solid black;
@@ -32,8 +32,6 @@ body {
     justify-self: center;
     height: 42px;
     width: 84px;
-    font-size: 24px;
-    padding-left: 14px;
-    padding-top: 5px;
     border-radius: 5px;
+    font-size: 16px;
 }

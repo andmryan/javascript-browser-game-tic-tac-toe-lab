@@ -14,8 +14,8 @@
 //7) Create Reset functionality.
 
 /*-------------------------------- Constants --------------------------------*/
-
-const winLines = [
+//5) Define the required constants.
+const winningLines = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -26,56 +26,60 @@ const winLines = [
     [2, 4, 6]
 ];
 
+
 /*---------------------------- Variables (state) ----------------------------*/
 
 let board = [
-    "", "", "",
-    "", "", "",
-    "", "", "",
+"", "", "",
+"", "", "",
+"", "", "",
 ];
 
-let player = 'x';
+let turn = "X";
 let winner = false;
 let tie = false;
 
 /*------------------------ Cached Element References ------------------------*/
 
-const squareEls = document.querySelectorAll(".square");
+const sqrEls = document.querySelectorAll(".sqr");
 const messageEl = document.querySelector("#message");
 const resetButton = document.querySelector("#restart");
 
 /*-------------------------------- Functions --------------------------------*/
 
-function updateBoard(index) {
-    board[index] = player
-}
+function initialize() {
+    // console.log("Init.")
+    board = [
+        "", "", "",
+        "", "", "",
+        "", "", "",
+    ];
+
+    winner = false;
+    tie = false;
+    turn = "X";
+    
+    renderGame();
+};
+
+initialize()
 
 function renderGame() {
     updateBoard();
     updateMessage();
 };
 
-function start() {
-    board = [
-        "","","",
-        "","","",
-        "","","",
-    ]
-    winner = false
-    tie = false
-    player = 'x'
-    renderGame();
+function updateBoard(index) {
+    board[index] = turn
 };
-
-start();
 
 function updateMessage() {
     if (!winner && !tie) {
-        messageEl.textContent = `It's ${player}'s turn!`
+        messageEl.textContent = `It's player ${turn}'s turn`
     } else if (!winner && tie) {
         messageEl.textContent = "It's a tie!";
     } else {
-        messageEl.textContent = `Congrats ${player}!`
+        messageEl.textContent = `Congrats player ${turn}!`
     }
 };
 
@@ -96,43 +100,51 @@ function checkWinner() {
     winner = true
     }else if (board[6] !== "" && board[6] === board[4] && board[6] === board[2]) {
     winner = true
-}};
+    }
+};
 
-// I would like to figure out how to make the game check if there's something from winLines rather than writing out all the combos, but my brain is fried atm.
+// I would like to figure out how to check if there's a winner in a more succinct way than this... I would also like to figure out how to remove the event listener for clicking on squares and add the event listener to reset the game when a winner or a tie is called.
 
 function checkTie() {
     tie = !winner && board.every(cell => cell !== "")
 };
 
-function playerChange() {
+function switchPlayer() {
 if (winner) {
     return
-} else if (!winner && player === "x") {
-        player = "o"
-} else if (!winner && player === "o") {
-        player = "x"
+} else if (!winner && turn === "X") {
+        turn = "O"
+} else if (!winner && turn === "O") {
+        turn = "X"
 }};
 
 function handleClick(event) {
     const cell = event.target
     const index = cell.id
-    updateBoard();
-    cell.textContent = player
+
+    updateBoard(index);
+
+    cell.textContent = turn;
+
     checkWinner();
     checkTie();
-    playerChange();
+    switchPlayer();
     renderGame();
 };
 
-// I can't tell why my game can't decide who the winner is? Everything else seems to work. I left it as is for now, since turning in something is better than turning in nothing. :(
+function gameOverClick(event) {
+    cell = event.target
+    index = cell.id
+    cell.textContent = "";
+};
 
 // /*----------------------------- Event Listeners -----------------------------*/
 
-squareEls.forEach(squareEl => {
-    squareEl.addEventListener('click', handleClick);
+sqrEls.forEach(squareEl => {
+    squareEl.addEventListener("click", handleClick);
 });
 
-resetButton.addEventListener('click', () => {
-    start();
-    squareEls.forEach(cell => cell.innerText = "")
+resetButton.addEventListener("click", () => {
+    initialize();
+    sqrEls.forEach(cell => cell.innerText = "");
 });
